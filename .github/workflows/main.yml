@@ -22,11 +22,6 @@ jobs:
       - name: Build JAR
         run: mvn clean package -DskipTests
 
-      - name: Set up Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-
       - name: Build and Tag Docker Image
         run: |
           docker build -t payment_microservice -f Dockerfile.payment .
