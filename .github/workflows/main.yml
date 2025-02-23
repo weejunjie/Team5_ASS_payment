@@ -1,0 +1,77 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - 'deploy/*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java & Build Spring Boot App
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build JAR
+        run: mvn clean package -DskipTests
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+
+      - name: Build and Tag Docker Image
+        run: |
+          docker build -t payment_microservice -f Dockerfile.payment .
+
+#      - name: Configure AWS CLI
+#        if: ${{ success() }}
+#        run: |
+#          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws configure set default.region ap-southeast-2
+#
+#      - name: Push Docker image to ECR
+#        if: ${{ success() }}
+#        run: |
+#          docker tag payment_microservice:latest 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com/payment_microservice:latest
+#          aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com
+#          docker push 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com/payment_microservice:latest
+#
+#      - name: Create SSH key file
+#        if: ${{ success() }}
+#        run: |
+#          ssh-keygen -t rsa -N "" -f my_key
+#          aws ec2-instance-connect send-ssh-public-key --region ap-southeast-2 --availability-zone  ap-southeast-2c --instance-id i-0248cc38c32d5b1a7 --instance-os-user ec2-user --ssh-public-key file://my_key.pub
+#          ssh-keygen -t rsa -N "" -f my_key_test
+#          aws ec2-instance-connect send-ssh-public-key --region ap-southeast-2 --availability-zone  ap-southeast-2b --instance-id i-0cf28d0737d84322d --instance-os-user ec2-user --ssh-public-key file://my_key_test.pub
+#
+#      - name: SSH into EC2 instance and pull docker image to actual server
+#        if: ${{ success() }}
+#        run: |
+#          ssh -o StrictHostKeyChecking=no -i my_key ec2-user@ec2-13-210-101-186.ap-southeast-2.compute.amazonaws.com << EOF
+#          aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com
+#          docker image prune -f
+#          docker pull 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com/payment_microservice
+#          docker rm -f payment_microservice || true && docker run -d -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e EC2=true --name payment_microservice -p 8080:8080 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com/payment_microservice
+#          EOF
+#
+#      - name: SSH into EC2 instance and pull docker image to test server
+#        if: ${{ success() }}
+#        run: |
+#          ssh -o StrictHostKeyChecking=no -i my_key_test ec2-user@ec2-54-252-168-241.ap-southeast-2.compute.amazonaws.com << EOF
+#          aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com
+#          docker image prune -f
+#          docker pull 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com/payment_microservice
+#          docker rm -f payment_microservice_test || true && docker run -d -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e EC2_TEST=true --name payment_microservice_test -p 8080:8080 409151997352.dkr.ecr.ap-southeast-2.amazonaws.com/payment_microservice
+#          EOF
+#
+#      - name: Cleanup
+#        run: docker logout
