@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build JAR
+      - name: Build JAR Unit Test
         run: mvn clean package -DskipTests
 
       - name: Build and Tag Docker Image

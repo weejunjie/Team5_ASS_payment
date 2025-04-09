@@ -27,16 +27,15 @@ public class PaymentController {
         return paymentService.createPayment(request);
     }
 
-    @GetMapping("/{paymentId}")
-    public ResponseEntity<PaymentResponseDto> getPayment(@PathVariable String paymentId) {
-        System.out.println("Fetching payment with ID: " + paymentId);
-        Payment payment = paymentService.getPaymentById(paymentId);
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<PaymentResponseDto> getPayment(@PathVariable String bookingId) {
+        Payment payment = paymentService.getPaymentById(bookingId);
         if (payment == null) {
             return ResponseEntity.notFound().build();
         }
         PaymentResponseDto response = new PaymentResponseDto();
         response.setPaymentId(payment.getPaymentId());
-        response.setBookingId(payment.getBookingId().getBookingId()); // Ensure Booking is fetched
+        response.setBookingId(bookingId);
         response.setAmount(payment.getAmount());
         response.setTransactionId(payment.getTransactionId());
         response.setPaymentMethod(payment.getPaymentMethod());
