@@ -5,12 +5,12 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "tb_booking")
+@Table(name = "booking")
 @Data
 public class Booking {
 
     @Id
-    @Column(name = "booking_id", length = 255)
+    @Column(name = "id", length = 255)
     private String bookingId;
 
     @Column(name = "amount ", precision = 20, scale = 2)
