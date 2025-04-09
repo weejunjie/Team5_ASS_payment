@@ -1,6 +1,8 @@
 package com.nusiss.ass.payment.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -36,12 +38,16 @@ public class PaymentService {
     private static final String SECRET_KEY = "gVuoc5zK4F9Ukr8aWNkohE5ppUZOy2XEjPIGswL0EZo=";
 
     @Transactional
-    public PaymentResponseDto createPayment(PaymentRequestDto request) {
+    public ResponseEntity<PaymentResponseDto> createPayment(PaymentRequestDto request) {
         PaymentResponseDto response = new PaymentResponseDto();
         try {
             // Validate booking exists
             Booking booking = bookingRepository.findById(encrypt(request.getBookingId()))
-                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+                    .orElse(null);
+
+            if (booking == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
 
             Payment payment = new Payment();
             String paymentId = "PAY-" + UUID.randomUUID();
@@ -90,9 +96,9 @@ public class PaymentService {
             response.setCreatedDate(createdTime);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return response;
+        return ResponseEntity.ok(response);
     }
 
     public Payment getPaymentById(String bookingId) {
