@@ -1,8 +1,11 @@
 package com.nusiss.ass.payment.controller;
 
+import com.nusiss.ass.payment.PaymentServiceApplication;
 import com.nusiss.ass.payment.dto.PaymentRequestDto;
 import com.nusiss.ass.payment.dto.PaymentResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +26,7 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping
-    public PaymentResponseDto createPayment(@RequestBody PaymentRequestDto request) {
+    public ResponseEntity<PaymentResponseDto> createPayment(@RequestBody PaymentRequestDto request) {
         return paymentService.createPayment(request);
     }
 
