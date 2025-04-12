@@ -89,7 +89,7 @@ jobs:
       - name: Build and Tag Docker Image
         if: ${{ success() }}
         run: |
-          docker build -f Dockerfile.payment --build-arg DB_IP=${{ secrets.RDS_URL }} --build-arg DB_DB=${{ secrets.RDS_DB }} --build-arg DB_USERNAME=${{ secrets.RDS_USERNAME }} --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} -t payment_microservice .
+          docker build -t payment_microservice -f Dockerfile.payment .
 
       - name: Tag Docker image
         if: ${{ success() }}

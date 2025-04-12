@@ -12,7 +12,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the application
-RUN mvn clean package -DskipTests -Ddb.ip=$DB_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
+RUN mvn clean package -DskipTests
 
 # Use a lightweight JDK image for runtime
 FROM eclipse-temurin:17-jdk-alpine
