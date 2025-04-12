@@ -46,7 +46,7 @@ jobs:
         run: |
           CONTAINER_ID=$(docker ps -q --filter "ancestor=mysql:latest")
           echo "Waiting for MySQL to be ready..."
-          until mysqladmin ping --host=$CONTAINER_IP --port=3306 --user=root --password=root123 --silent; do
+          until mysqladmin ping --host=$CONTAINER_IP --port=3306 --user=user123 --password=root123 --silent; do
             echo "Waiting for MySQL..."
             sleep 5
           done
