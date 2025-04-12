@@ -9,7 +9,7 @@
 
 ##build image java
 1. docker network create rentify (Create docker network if not yet created)
-2. docker build -f Dockerfile.payment --build-arg DB_IP=rentify_mysql_container:3306 --build-arg DB_DB=rentify --build-arg DB_USERNAME=root --build-arg DB_PASSWORD=default1111 -t payment_microservice .
+2. docker build -t payment_microservice -f Dockerfile.payment .
 3. docker rm -f payment_microservice || true && docker run -d -e DOCKER_CONTAINER=true -e DB_IP=rentify_mysql_container:3306 -e DB_DB=rentify -e DB_USERNAME=root -e DB_PASSWORD=default1111 --name payment_microservice --network=rentify -p 8080:8080 payment_microservice
 
 ##run program in local without build in docker
