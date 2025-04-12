@@ -9,5 +9,17 @@
 
 ##build image java
 1. docker network create rentify (Create docker network if not yet created)
-2. docker build -t payment_microservice -f Dockerfile.payment .
-3. docker rm -f payment_microservice || true && docker run -d -e DOCKER_CONTAINER=true --name payment_microservice --network=rentify -p 8080:8080 payment_microservice
+2. docker build -f Dockerfile.payment --build-arg DB_IP=rentify_mysql_container:3306 --build-arg DB_DB=rentify --build-arg DB_USERNAME=root --build-arg DB_PASSWORD=default1111 -t payment_microservice .
+3. docker rm -f payment_microservice || true && docker run -d -e DOCKER_CONTAINER=true -e DB_IP=rentify_mysql_container:3306 -e DB_DB=rentify -e DB_USERNAME=root -e DB_PASSWORD=default1111 --name payment_microservice --network=rentify -p 8080:8080 payment_microservice
+
+##run program in local without build in docker
+mvn -Dspring-boot.run.jvmArguments="-Ddb.ip=<db ip> -Ddb.db=<db> -Ddb.username=<db username> -Ddb.password=<db password>"
+
+##run in jar file
+java -Ddb.ip=<db ip> -Ddb.db=<db> -Ddb.username=<db username> -Ddb.password=<db password> -jar Team5_ASS_payment-1.0.jar
+
+##integration test
+mvn clean verify -Ddb.ip=<db ip> -Ddb.db=<db> -Ddb.username=<db username> -Ddb.password=<db password>
+
+##integration test
+mvn clean install -Ddb.ip=<db ip> -Ddb.db=<db> -Ddb.username=<db username> -Ddb.password=<db password>
