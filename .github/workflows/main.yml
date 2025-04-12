@@ -24,8 +24,7 @@ jobs:
           --health-timeout=5s
           --health-retries=10
           --health-start-period=30s
-        entrypoint: |
-          bash -c "docker-entrypoint.sh mysqld --init-command='ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY \"root123\";'"
+          --command="mysqld --init-command='ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY \"root123\";'"
 
     steps:
       - name: Checkout code
