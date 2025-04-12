@@ -34,13 +34,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Get MySQL container IP address
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter "ancestor=mysql:latest")
+          CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
+          echo "MySQL container IP is $CONTAINER_IP"
+          echo "CONTAINER_IP=$CONTAINER_IP" >> $GITHUB_ENV
+
       - name: Build JAR Unit Test
         env:
-          DB_IP: localhost:3306
           DB_DB: mysqldb
           DB_USERNAME: user123
           DB_PASSWORD: password123
-        run: mvn clean verify -Ddb.ip=$DB_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
+        run: mvn clean verify -Ddb.ip=$CONTAINER_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
 #
 #  deploy:
 #    runs-on: ubuntu-latest
