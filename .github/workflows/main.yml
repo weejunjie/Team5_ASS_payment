@@ -52,12 +52,12 @@ jobs:
           done
           echo "MySQL is ready!"
 
-#      - name: Build JAR Unit Test
-#        env:
-#          DB_DB: mysqldb
-#          DB_USERNAME: user123
-#          DB_PASSWORD: password123
-#        run: mvn clean verify -Ddb.ip=$CONTAINER_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
+      - name: Build JAR Unit Test
+        env:
+          DB_DB: mysqldb
+          DB_USERNAME: user123
+          DB_PASSWORD: password123
+        run: mvn clean verify -Ddb.ip=$CONTAINER_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
 #
 #  deploy:
 #    runs-on: ubuntu-latest
