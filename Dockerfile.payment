@@ -1,5 +1,10 @@
 # Use Maven 3.8.8 with OpenJDK 17 as the build image
 FROM maven:3.8.8-eclipse-temurin-17 AS build
+ARG DB_IP
+ARG DB_DB
+ARG DB_USERNAME
+ARG DB_PASSWORD
+
 WORKDIR /app
 
 # Copy project files
@@ -7,7 +12,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the application
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Ddb.ip=$DB_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
 
 # Use a lightweight JDK image for runtime
 FROM eclipse-temurin:17-jdk-alpine
@@ -16,8 +21,20 @@ WORKDIR /app
 # Copy the built JAR from the previous stage
 COPY --from=build /app/target/*.jar Team5_ASS_payment-1.0.jar
 
+# Set environment variables for the runtime
+ENV DB_IP=${DB_IP}
+ENV DB_DB=${DB_DB}
+ENV DB_USERNAME=${DB_USERNAME}
+ENV DB_PASSWORD=${DB_PASSWORD}
+
 # Expose port 8080
 EXPOSE 8080
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "Team5_ASS_payment-1.0.jar"]
+# ENTRYPOINT ["java", "-Ddb.ip=${DB_IP}", "-Ddb.db=${DB_DB}", "-Ddb.username=${DB_USERNAME}", "-Ddb.password=${DB_PASSWORD}" ,"-jar", "Team5_ASS_payment-1.0.jar"]
+ENTRYPOINT sh -c "echo '🚀 RUNTIME ENVIRONMENT:' && \
+  echo DB_IP=$DB_IP && \
+  echo DB_DB=$DB_DB && \
+  echo DB_USERNAME=$DB_USERNAME && \
+  echo DB_PASSWORD=$DB_PASSWORD && \
+  java -Ddb.ip=$DB_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD -jar Team5_ASS_payment-1.0.jar"
