@@ -24,8 +24,6 @@ jobs:
           --health-timeout=5s
           --health-retries=10
           --health-start-period=30s
-        entrypoint: >
-          /bin/bash -c "docker-entrypoint.sh mysqld --init-command='ALTER USER \"root\"@\"localhost\" IDENTIFIED WITH mysql_native_password BY \"root123\";'"
 
     steps:
       - name: Checkout code
@@ -53,6 +51,7 @@ jobs:
             sleep 5
           done
           echo "MySQL is ready!"
+          docker exec $CONTAINER_ID mysql -u root -proot123 -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root123';"
           DB_IP="$CONTAINER_IP:3306"
           echo "DB_IP=$DB_IP" >> $GITHUB_ENV
           echo "MySQL container IP is $DB_IP"
