@@ -15,13 +15,13 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root123 # Set the root password
           MYSQL_USER: user123 # Optional: Create a non-root user
-          MYSQL_PASSWORD: password123 # Password for the non-root user
+          MYSQL_PASSWORD: root123 # Password for the non-root user
           MYSQL_DATABASE: mysqldb
           MYSQL_INIT_COMMAND: "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root123';"  # Ensure mysql_native_password is used
         ports:
           - "3306:3306"
         options:
-          --health-cmd="mysqladmin ping --host=mysql-test --user=root --password=root123"
+          --health-cmd="mysqladmin ping --silent --user=root --password=root123"
           --health-timeout=5s
           --health-retries=10
           --health-start-period=30s
@@ -61,7 +61,7 @@ jobs:
           DB_IP: ${{ env.DB_IP }}
           DB_DB: mysqldb
           DB_USERNAME: root
-          DB_PASSWORD: password123
+          DB_PASSWORD: root123
         run: |
           echo "MySQL container IP is $DB_IP"
           mvn clean verify -Ddb.ip=$DB_IP -Ddb.db=$DB_DB -Ddb.username=$DB_USERNAME -Ddb.password=$DB_PASSWORD
