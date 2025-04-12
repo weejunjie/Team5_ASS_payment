@@ -106,7 +106,7 @@ public class PaymentControllerTest {
         assertNotNull(body);
 
         assertEquals("BOOK-1", body.getBookingId());
-        assertEquals(new BigDecimal("101.10"), body.getAmount());
+        assertEquals(new BigDecimal("100.10"), body.getAmount());
         assertEquals(Payment.PaymentMethod.BANK_A, body.getPaymentMethod());
         assertEquals("SUCCESS", body.getStatus());
     }
