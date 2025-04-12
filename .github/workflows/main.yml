@@ -59,7 +59,7 @@ jobs:
         env:
           DB_IP: ${{ env.DB_IP }}
           DB_DB: mysqldb
-          DB_USERNAME: user123
+          DB_USERNAME: root
           DB_PASSWORD: password123
         run: |
           echo "MySQL container IP is $DB_IP"
