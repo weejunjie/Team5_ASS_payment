@@ -51,6 +51,8 @@ jobs:
             sleep 5
           done
           echo "MySQL is ready!"
+          echo "CONTAINER_IP=$CONTAINER_IP:3306" >> $GITHUB_ENV
+          echo "MySQL container IP is $CONTAINER_IP"
 
       - name: Build JAR Unit Test
         env:
