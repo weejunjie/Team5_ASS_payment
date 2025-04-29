@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 public class Booking {
 
     @Id
-    @Column(name = "id", length = 255)
+    @Column(name = "booking_id", length = 255)
     private String bookingId;
 
-    @Column(name = "amount ", precision = 20, scale = 2)
+    @Column(name = "total_amount ", precision = 20, scale = 2)
     private BigDecimal amount;
 
 }
